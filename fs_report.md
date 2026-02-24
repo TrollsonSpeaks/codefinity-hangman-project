@@ -32,11 +32,12 @@ main.py
 
 ## File: main.py
 ````
-# Necessary import to return a random word
+# Necessary imports
 import random
+import os
 
 # List of words used for the Hangman game
-WORDS = ["Bailey", "Munchkin", "Guster", "Bunion", "Trollson", "Meegan", "parrot", "bunny"]
+WORDS = ["python", "hangman", "developer", "console", "project", "function", "integer", "variable"]
 
 # Symbol used to represent hidden letters
 HIDDEN_SYMBOL = "_"
@@ -83,9 +84,96 @@ def show_possible_matches(pattern):
     
     return results
 
+# Main Hangman game engine w/ visual output
+def hangman(secret_word):
+    guessed_letters = []
+    mistakes = 0
+    stages = [
+        """
+           -----
+           |   |
+               |
+               |
+               |
+               |
+        """,
+        """
+           -----
+           |   |
+           O   |
+               |
+               |
+               |
+        """,
+        """
+           -----
+           |   |
+           O   |
+           |   |
+               |
+               |
+        """,
+        """
+           -----
+           |   |
+           O   |
+          /|   |
+               |
+               |
+        """,
+        """
+           -----
+           |   |
+           O   |
+          /|\\  |
+               |
+               |
+        """,
+        """
+           -----
+           |   |
+           O   |
+          /|\\  |
+          /    |
+               |
+        """,
+        """
+           -----
+           |   |
+           O   |
+          /|\\  |
+          / \\  |
+               |
+        """
+    ]
+
+    while not is_word_guessed(secret_word, guessed_letters) and mistakes < MAX_ATTEMPTS:
+        clear_screen()
+        print(stages[mistakes])
+        
+        print("Word: ", get_guessed_word(secret_word, guessed_letters))
+        print("Available letters: ", get_available_letters(guessed_letters))
+
+        guess = input("Guess a letter: ").lower()
+        if guess in secret_word and guess not in guessed_letters:
+            guessed_letters.append(guess)
+        else:
+            mistakes += 1
+
+    clear_screen()
+    print(stages[mistakes])
+
+    if is_word_guessed(secret_word, guessed_letters):
+        print("You won!")
+    else:
+
+# Clear screen
+def clear_screen():
+    os.system("cls" if os.name == "nt" else "clear")
+
 def main():
     # Entry point for the game
-    pass
+    hangman(choose_word_random())
 
 
 if __name__ == "__main__":
